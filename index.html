@@ -3,26 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>俊俊天氣</title>
-
-    <!-- Icon -->
     <link rel="icon" type="image/png" href="./icon-v2.png">
     <link rel="apple-touch-icon" href="./icon-v2.png">
-
-    <!-- Japanese style font -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./icon-v2.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
 
-
-    <!-- 🌿 基礎色票 ＋ 日系水彩背景 -->
     <style>
         :root {
             --ac-green: #A8C9A0;
-            --ac-green-light: #DCEAD5;
+            --ac-green-light: #CFE7C8;
             --ac-paper: #FAF8F1;
             --ac-yellow: #F7E9A5;
             --ac-brown: #6E5A4E;
@@ -38,23 +31,19 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 🌿 日系水彩背景（重點：柔和、光暈、透明層） */
         body {
-            font-family: "Zen Maru Gothic", sans-serif;
+            font-family: 'Zen Maru Gothic', sans-serif;
             background-color: var(--ac-green-light);
             background-image:
-                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 60%),
-                radial-gradient(circle at 80% 25%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 55%),
-                radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 50%),
-                url("https://i.imgur.com/0uv0r32.png"); /* 柔霧水彩紙材質 */
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 60%),
+                radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 55%),
+                radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 50%);
             background-size: cover;
-            background-attachment: fixed;
-            color: var(--ac-dark);
             min-height: 100vh;
-            padding-bottom: 30px;
+            padding-bottom: 20px;
+            color: var(--ac-dark);
         }
 
-        /* 頂部狀態列 */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -81,41 +70,122 @@
 
         .update-pill {
             font-size: 0.8rem;
+            color: var(--ac-dark);
             background: rgba(255, 255, 255, 0.6);
             padding: 4px 10px;
             border-radius: 12px;
         }
-    </style>
-</head>
 
-<body>
-    <!-- Loading 畫面 -->
-    <div id="loading" class="loading-screen" style="position: fixed; inset:0; display:flex; flex-direction: column; justify-content: center; align-items: center; background: var(--ac-green-light); z-index: 999; background-image:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 55%),
-        radial-gradient(circle at 70% 70%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 55%);">
-        <div style="font-size: 4rem; animation: bounce 2s infinite;">☁️</div>
-        <p style="color: var(--ac-dark); font-weight: bold; margin-top: 20px;">正在觀測雲的流動...</p>
-    </div>
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-    <!-- 主畫面容器 -->
-    <div class="container" id="mainContent" style="display: none;">
+        .hero-card {
+            background: var(--ac-paper);
+            border-radius: 35px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.1);
+            border: 4px solid white;
+            margin-bottom: 25px;
+            position: relative;
+            background-image: url('https://i.imgur.com/bkTvYWI.png');
+            background-size: cover;
+            background-blend-mode: lighten;
+        }
 
-        <!-- Hero Card (今日天氣焦點) -->
-        <div id="heroCard">
-            <!-- JS 會動態插入內容 -->
-        </div>
-        <!-- 稍後預報區塊 -->
-        <h3 class="section-title">稍後預報</h3>
-        <div class="scroll-container" id="futureForecasts">
-            <!-- JS 會動態插入小卡 -->
-        </div>
-    </div> <!-- container 結束 -->
+        .hero-period {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ac-blue);
+            color: white;
+            padding: 6px 22px;
+            border-radius: 25px;
+            font-weight: bold;
+            border: 3px solid white;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+        }
 
-    <!-- CSS 動畫：bounce -->
-    <style>
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .hero-temp-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .hero-icon {
+            font-size: 5rem;
+        }
+
+        .hero-temp {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: var(--ac-brown);
+            line-height: 1;
+        }
+
+        .hero-desc {
+            font-size: 1.4rem;
+            color: #7A6D63;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .advice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #D4CAB7;
+        }
+
+        .advice-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            border-radius: 20px;
+        }
+
+        .advice-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .advice-text {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--ac-brown);
+            margin: 5px 0;
+            line-height: 1.2;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--ac-dark);
+            margin-bottom: 15px;
+            margin-left: 10px;
+            font-weight: 900;
+        }
+
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none;
         }
 
         .mini-card {
@@ -126,7 +196,7 @@
             text-align: center;
             border: 3px solid white;
             flex-shrink: 0;
-            background-image: url('https://i.imgur.com/UQePfzM.png'); /* 日系水彩紙紋理 */
+            background-image: url('https://i.imgur.com/UQePfzM.png');
             background-size: cover;
             background-blend-mode: lighten;
         }
@@ -152,22 +222,55 @@
             font-weight: 800;
             color: var(--ac-dark);
         }
+
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--ac-green-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            background-image:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 55%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 55%);
+        }
     </style>
+</head>
+
+<body>
+    <div id="loading" class="loading-screen">
+        <div style="font-size: 4rem;">☁️</div>
+        <p style="color: var(--ac-dark); font-weight: bold; margin-top: 20px;">正在觀測雲的流動...</p>
+    </div>
+
+    <div class="status-bar">
+        <div class="location-pill">📍 宜蘭</div>
+        <div id="updateTime" class="update-pill">更新中...</div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
+        <div id="heroCard"></div>
+
+        <h3 class="section-title">稍後預報</h3>
+        <div class="scroll-container" id="futureForecasts"></div>
+    </div>
+
     <script>
         const API_URL = "https://weatherreport.zeabur.app/api/weather/kaohsiung";
 
-        // 根據天氣文字回傳對應圖示
         function getWeatherIcon(weather) {
-            if (!weather) return "🌤️";
-            if (weather.includes("晴")) return "☀️";
-            if (weather.includes("多雲")) return "⛅";
-            if (weather.includes("陰")) return "☁️";
-            if (weather.includes("雨")) return "🌧️";
-            if (weather.includes("雷")) return "⛈️";
-            return "🌤️";
+            // 日系手繪水彩風 emoji / SVG
+            if (!weather) return "☀️";
+            if (weather.includes("晴")) return "🌞"; // 太陽
+            if (weather.includes("多雲")) return "🌤️"; // 小雲
+            if (weather.includes("陰")) return "☁️"; // 烏雲
+            if (weather.includes("雨")) return "🌦️"; // 小雨
+            if (weather.includes("雷")) return "⛈️"; // 雷雨
+            return "🌞";
         }
 
-        // 根據降雨率與最高溫給建議
         function getAdvice(rainProb, maxTemp) {
             let rainIcon = "🌂";
             let rainText = "不用帶傘";
@@ -189,7 +292,6 @@
             return { rainIcon, rainText, clothIcon, clothText };
         }
 
-        // 判斷時間段
         function getTimePeriod(startTime) {
             const hour = new Date(startTime).getHours();
             if (hour >= 5 && hour < 11) return "早晨";
@@ -199,13 +301,25 @@
             return "深夜";
         }
 
-        // 渲染天氣資料到畫面
+        function showErrorMessage(msg) {
+            const container = document.getElementById('mainContent');
+            container.innerHTML = `
+                <div style="text-align:center; margin-top:50px; color:#555; font-weight:bold;">
+                    ⚠️ ${msg}
+                </div>
+            `;
+        }
+
         function renderWeather(data) {
             const forecasts = data.forecasts;
+            if (!forecasts || forecasts.length === 0) {
+                showErrorMessage("目前天氣資料空白");
+                return;
+            }
+
             const current = forecasts[0];
             const others = forecasts.slice(1);
 
-            // Hero Card
             const advice = getAdvice(current.rain, current.maxTemp);
             const period = getTimePeriod(current.startTime);
             const avgTemp = Math.round((parseInt(current.maxTemp) + parseInt(current.minTemp)) / 2);
@@ -234,7 +348,6 @@
                 </div>
             `;
 
-            // 稍後預報小卡
             const scrollContainer = document.getElementById('futureForecasts');
             scrollContainer.innerHTML = '';
             const todayDate = new Date().getDate();
@@ -256,37 +369,36 @@
                 `;
             });
 
-            // 更新右上角日期
             const now = new Date();
             const month = now.getMonth() + 1;
             const date = now.getDate();
             const dayIndex = now.getDay();
             const days = ["週日","週一","週二","週三","週四","週五","週六"];
-
             document.getElementById('updateTime').textContent = `${month}月${date}日 ${days[dayIndex]}`;
         }
 
-        // 抓取天氣 API
         async function fetchWeather() {
             try {
                 const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
                 const fetchPromise = fetch(API_URL).then(res => res.json());
                 const [_, json] = await Promise.all([delayPromise, fetchPromise]);
 
-                if (json.success) {
+                if (json.success && json.data) {
                     renderWeather(json.data);
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('mainContent').style.display = 'block';
                 } else {
-                    throw new Error("API Error");
+                    showErrorMessage("天氣資料讀取失敗");
                 }
             } catch(e) {
-                console.error(e);
-                alert("天氣資料讀取失敗，狸克把網路線咬斷了！");
+                console.error("Fetch error:", e);
+                showErrorMessage("天氣資料讀取失敗");
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
             }
         }
 
         document.addEventListener("DOMContentLoaded", fetchWeather);
     </script>
 </body>
+
 </html>
